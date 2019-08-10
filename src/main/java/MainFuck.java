@@ -22,6 +22,7 @@ class MainFuck {
 
     public static void main(String[] args) {
 
+
         Runnable r = () -> {
             Socket socket = null;
             OutputStream os = null;
