@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 /**
  * 十六进制工具箱
  *
@@ -14,24 +16,15 @@ public class HexUtil {
      * @return
      */
     public static byte[] hexStrToBinaryStr(String hexString) {
-
         hexString = hexString.replaceAll(" ", "");
-
         int len = hexString.length();
         int index = 0;
-
         byte[] bytes = new byte[len / 2];
-
         while (index < len) {
-
             String sub = hexString.substring(index, index + 2);
-
             bytes[index / 2] = (byte) Integer.parseInt(sub, 16);
-
             index += 2;
         }
-
-
         return bytes;
     }
 
@@ -59,12 +52,10 @@ public class HexUtil {
      * @return String 每个Byte之间空格分隔，如: [61 6C 6B]
      */
     public static String str2HexStr(String str) {
-
         char[] chars = "0123456789ABCDEF".toCharArray();
         StringBuilder sb = new StringBuilder("");
         byte[] bs = str.getBytes();
         int bit;
-
         for (int i = 0; i < bs.length; i++) {
             bit = (bs[i] & 0x0f0) >> 4;
             sb.append(chars[bit]);
@@ -73,11 +64,11 @@ public class HexUtil {
             sb.append("");
         }
         return sb.toString().trim();
-
     }
 
     /**
      * 十进制整数转换为十六进制字符串 补全到两位
+     *
      * @param i
      * @return
      */
@@ -87,5 +78,21 @@ public class HexUtil {
             str = "0" + str;
         }
         return str;
+    }
+
+    /**
+     * 获取指定长度的随机用户名
+     *
+     * @param count 用户名长度 0-13
+     * @return
+     */
+    public static String getRandomUserHex(int count) {
+        if (count < 0 || count > 13) {
+            throw new RuntimeException("User Name Length Invalid");
+        }
+        String rname = RandomStringUtils.randomAlphanumeric(count);
+        String rHex = str2HexStr(rname);
+        int len = rHex.length();
+        return int2HexStr(len + 2) + "00" + int2HexStr(len) + rHex;
     }
 }

@@ -11,21 +11,29 @@ import util.HexUtil
  *
  * @author crt106 on 2019/8/11.
  */
-class TpCommand(name: String, var x: Int, var y: Int, var z: Int) : BaseCommand(name = name) {
+class TpCommand(var x: Int, var y: Int, var z: Int) : ICommand {
+
+    override var commandStr: String? = ""
 
     init {
         commandStr = "/tp $x $y $z"
     }
 
     companion object {
+
+        private const val XZMIN = -9999
+        private const val XZMAX = 9999
+        private const val YMIN = 0
+        private const val YMAX = 256
+
         /**
          * 生成随机Tp指令
          */
         fun randomTp(): TpCommand {
-            val x = (-9999..9999).random()
-            val y = (0..256).random()
-            val z = (-9999..9999).random()
-            return TpCommand("randomTP", x, y, z);
+            val x = (XZMIN..XZMAX).random()
+            val y = (YMIN..YMAX).random()
+            val z = (-XZMIN..XZMAX).random()
+            return TpCommand(x, y, z)
         }
     }
 
@@ -33,7 +41,7 @@ class TpCommand(name: String, var x: Int, var y: Int, var z: Int) : BaseCommand(
      * 将所执行的命令转换为16进制字符串输出
      */
     override fun toHexString(): String {
-        var len = commandStr?.length
+        val len = commandStr?.length
         if (len != null) {
             return HexUtil.int2HexStr(len + 3) + "0003" + HexUtil.int2HexStr(len) + HexUtil.str2HexStr(commandStr);
         }

